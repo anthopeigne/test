@@ -1,0 +1,96 @@
+
+Definition example : nat -> nat :=
+  nat_rect (fun _ => nat) 2 (fun n x => 3*x - n).
+
+Compute (example 3).
+
+Theorem nat_rect_cmp : forall P BC IS n,
+  nat_rect P BC IS 0 = BC /\
+  nat_rect P BC IS (S n) = IS n (nat_rect P BC IS n).
+Proof.
+  intros P BC IS n. split; reflexivity.
+Qed.
+
+
+Require Import Arith.
+Require Import Extraction.
+Require Import Lia.
+
+Theorem diff_ex : forall m n : nat, m < n -> exists p, m + p = n.
+Proof.
+  intros m n H. exists (n - m). lia.
+Qed.
+
+(*
+Theorem diff_constructive : forall m n : nat, m < n -> {p | m + p = n}.
+Proof.
+  intros m n H. exists (n - m). lia.
+Defined.
+*)
+
+Theorem diff_ex_const : forall m n : nat, m < n -> {p | m + p = n}.
+Proof.
+  intros m n H. induction n; try lia.
+  destruct (le_lt_eq_dec _ _ H) as [Hlt|Hle].
+  - destruct IHn as [p Hp]; try lia. exists (S p). lia.
+  - exists 1. lia.
+Defined.
+
+Extraction "diff.ml" diff_constructive.
+
+Definition is_gt1 (n : nat) : bool :=
+  match n with
+  | O       => false
+  | S O     => false
+  | S (S m) => true
+  end.
+
+Definition is_gt1' (n : nat) : bool :=
+  match n with
+  | O   => false
+  | S m =>
+    match m with
+    | O   => false
+    | S k => true
+    end
+  end.
+
+Definition S_gt1 (n : nat) : nat :=
+  if is_gt1 n then S n else n.
+
+Definition S_gt1' (n : nat) : nat :=
+  match is_gt1 n with
+  | true => S n
+  | false => n
+  end.
+
+Fixpoint is_even (n : nat) : bool :=
+  match n with
+  | O       => true
+  | S O     => false
+  | S (S m) => is_even m
+  end.
+
+Definition odd (n : nat) : Prop :=
+  exists m, n = 2 * m + 1.
+
+Inductive even : nat -> Prop :=
+| even_O : even O
+| even_SS : forall n, even n -> even (S (S n)).
+
+Compute (is_even 12).
+
+Fixpoint double (n : nat) :=
+  match n with
+  | O   => O
+  | S m => S (S (double m))
+  end.
+
+Theorem even_double : forall n, even (double n).
+Proof.
+induction n.
+- simpl. apply even_O.
+- simpl. apply even_SS. assumption.
+Qed.
+
+Require Import Classical.
