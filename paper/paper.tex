@@ -1,0 +1,55 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{graphicx}
+
+\theoremstyle{thmstyleone}
+\newtheorem{lemma}{Lemma}
+
+\theoremstyle{thmstylethree}
+\newtheorem{definition}{Definition}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%
+%%Coq documentation%%
+%%%%%%%%%%%%%%%%%%%%%
+\def\BaseUrl{https://anthopeigne.github.io/test/}
+\newcommand{\coqdoc}[1]{\href{\BaseUrl/#1}{\raisebox{-.9mm}{\includegraphics[height=1em]{coql.png}}}}
+
+
+\begin{document}
+
+\section{Boolean stuff}
+
+Boole is cool.
+
+\begin{definition}[NXOR]
+	\coqdoc{More.html\#nxorb}
+	We define the NXOR boolean operator that we denote as $\odot$ by the truth table
+	\[
+		\begin{array}{|c|c|c|}
+			\hline
+			p & q & p \odot q \\
+			\hline
+			F & F & T \\
+			\hline
+			F & T & F \\
+			\hline
+			T & F & F \\
+			\hline
+			F & F & T \\
+			\hline
+		\end{array}
+	\]
+\end{definition}
+
+\begin{lemma}
+	\coqdoc{More.html\#nxorb\_invol}
+	$(p \odot q) \odot q = p$.
+\end{lemma}
+\end{document}
